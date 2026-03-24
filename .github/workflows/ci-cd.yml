@@ -28,13 +28,3 @@ jobs:
 
       - name: Push Docker Image
         run: docker push ${{ secrets.DOCKER_USERNAME }}/devops-pipeline-app:${{ github.run_number }}
-
-      - name: Set up kubectl
-        uses: azure/setup-kubectl@v3
-
-      - name: Deploy to Kubernetes
-        run: |
-          echo "${{ secrets.KUBECONFIG }}" > kubeconfig.yaml
-          export KUBECONFIG=kubeconfig.yaml
-          kubectl apply -f k8s/
-          kubectl set image deployment/devops-app devops-app=${{ secrets.DOCKER_USERNAME }}/devops-pipeline-app:${{ github.run_number }}
