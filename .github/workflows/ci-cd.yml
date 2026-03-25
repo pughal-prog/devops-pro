@@ -48,5 +48,4 @@ jobs:
       - name: Deploy to Kubernetes
         run: |
           kubectl apply -f k8s/ --validate=false
-          kubectl set image deployment/devops-app devops-app=${{ secrets.DOCKER_USERNAME }}/devops-pipeline-app:latest
           kubectl rollout status deployment/devops-app --timeout=300s
