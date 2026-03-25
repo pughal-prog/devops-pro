@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: devops-app
-        image: your-dockerhub-username/devops-pipeline-app:latest
+        image: pughal-prog/devops-pipeline-app:latest
         ports:
         - containerPort: 3000
         env:
