@@ -27,7 +27,10 @@ jobs:
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
       - name: Push Docker Image
-        run: docker push ${{ secrets.DOCKER_USERNAME }}/devops-pipeline-app:${{ github.run_number }}
+        run: |
+          docker push ${{ secrets.DOCKER_USERNAME }}/devops-pipeline-app:${{ github.run_number }}
+          docker tag ${{ secrets.DOCKER_USERNAME }}/devops-pipeline-app:${{ github.run_number }} ${{ secrets.DOCKER_USERNAME }}/devops-pipeline-app:latest
+          docker push ${{ secrets.DOCKER_USERNAME }}/devops-pipeline-app:latest
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v2
@@ -45,5 +48,5 @@ jobs:
       - name: Deploy to Kubernetes
         run: |
           kubectl apply -f k8s/ --validate=false
-          kubectl set image deployment/devops-app devops-app=${{ secrets.DOCKER_USERNAME }}/devops-pipeline-app:${{ github.run_number }}
-          kubectl rollout status deployment/devops-app
+          kubectl set image deployment/devops-app devops-app=${{ secrets.DOCKER_USERNAME }}/devops-pipeline-app:latest
+          kubectl rollout status deployment/devops-app --timeout=300s
