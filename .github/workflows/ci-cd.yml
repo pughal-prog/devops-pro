@@ -28,3 +28,18 @@ jobs:
 
       - name: Push Docker Image
         run: docker push ${{ secrets.DOCKER_USERNAME }}/devops-pipeline-app:${{ github.run_number }}
+
+      - name: Set up kubectl
+        uses: azure/setup-kubectl@v3
+
+      - name: Configure Kubeconfig
+        run: |
+          mkdir -p $HOME/.kube
+          echo "${{ secrets.KUBECONFIG }}" > $HOME/.kube/config
+          chmod 600 $HOME/.kube/config
+
+      - name: Deploy to Kubernetes
+        run: |
+          kubectl apply -f k8s/ --validate=false
+          kubectl set image deployment/devops-app devops-app=${{ secrets.DOCKER_USERNAME }}/devops-pipeline-app:${{ github.run_number }}
+          kubectl rollout status deployment/devops-app
