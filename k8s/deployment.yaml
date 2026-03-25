@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: devops-app
-        image: pughal-prog/devops-pipeline-app:11
+        image: pughalan/devops-pipeline-app:11
         ports:
         - containerPort: 3000
         env:
